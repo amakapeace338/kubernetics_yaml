@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap 
+metadata:
+  name: tomcat-users 
+data:
+  tomcat-users.xml:  |
+    <?xml version='1.0' encoding='utf-8'?>
+    <tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+    <user username="tomcat" password="tomcat" roles="admin-gui,manager-gui"/>
+    </tomcat-users>
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: webapp-rc
+  namespace: dev
+spec:
+  selector:
+    app: webapp
+  template:
+    metadata:
+      name: webapp-pod
+      labels:
+        app: webapp
+    spec:
+      volumes:
+      - name: tomcat-userconf
+      configMap:
+        items:
+        - key: "tomcat-users.xml"
+          path: "tomcat-users.xml"
+      containers:
+      - name: webapp-c
+        image: acadalearning/java-web-app
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: tomcat-userconf
+        mountPath: /usr/local/tomcat/conf/tomcat-users.xml
+        subPath: "tomcat-users.xml"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-svc
+spec:
+  selector:
+    app: webapp
+  ports:
+  - targetPort: 8080
