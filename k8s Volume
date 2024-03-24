@@ -1,0 +1,55 @@
+# Kubernetes Volume: Volume is a piece of storage: A Pod can use any number of volume types simultaneously. 
+# Ephemeral volume types have a lifetime of a pod, but persistent volumes exist beyond the lifetime of a pod. When a pod ceases to exist, Kubernetes destroys ephemeral volumes; however, 
+# Kubernetes does not destroy persistent volumes. For any kind of volume in a given pod, data is preserved across container restarts.
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springapp
+  namespace: dev
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: springapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1
+  minReadySeconds: 30
+  template: 
+    metadata:
+      name: springapp
+      labels:
+        app: springapp
+    spec: 
+      containers:
+      - name: springapp
+        image: acadalearning/spring-boot-mongo
+        ports:
+        - containerPort: 8080
+        env: 
+        - name: MONGO_DB_USERNAME
+          value: devdb
+        - name: MONGO_DB_PASSWORD 
+          value: devdb@123 
+        - name: MONGO_DB_HOSTNAME
+          value: mongo
+---
+
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: springapp
+  namespace: dev
+spec: 
+  type: NodePort
+  selector: 
+    app: springapp
+  ports: 
+  - targetPort: 8080
+    port: 80
+    protocol: TCP
+    nodePort: 32000
