@@ -1,3 +1,5 @@
+#Secrets: A configMap is an API object used to store confidential data in key value pair.
+
 apiVersion: v1
 kind: ConfigMap 
 metadata:
