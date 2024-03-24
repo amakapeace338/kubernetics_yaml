@@ -1,5 +1,21 @@
 # A configMap is an API object used to store non-confidential data in key value pair.
 
+#ConfigMap syntax
+#apiVersion: v1 
+#kind: ConfigMap 
+#metadata:
+  #name: springapp-cm
+  #namespace: dev 
+#data: 
+  #john: devdb
+  #ebere: devdb123
+ # mongo-hn: mongo
+
+
+
+
+
+
 apiVersion: v1
 kind: ConfigMap 
 metadata:
