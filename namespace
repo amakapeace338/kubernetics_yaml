@@ -1,0 +1,19 @@
+#kubectl get ns dev
+#kubectl get po --namespace=default
+#kubectl get po -n default
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: acada-pod
+  namespace: dev
+  labels:
+    app: acada
+spec:
+  containers:
+  - name: acada-c
+    image: acadalearning/acada:2.5
+    ports:
+    - containerPort: 8080
